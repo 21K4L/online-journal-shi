@@ -1,0 +1,66 @@
+/* auth.css */
+body {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    display: flex; /* Added for vertical centering */
+    justify-content: center; /* Added for horizontal centering */
+    align-items: center; /* Added for vertical centering */
+}
+
+.auth-container { /* Common container for both login and register */
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    max-width: 90%; /* Responsive width */
+}
+
+.auth-title { /* Common title style */
+    text-align: center;
+    margin-bottom: 20px;
+    color: #343a40;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    width: 100%; /* Full width button */
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.errorlist {
+    color: #dc3545;
+    margin-top: 5px;
+    list-style: none;
+    padding-left: 0;
+}
+
+.alert-danger {
+    margin-bottom: 20px;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 15px;
+}
