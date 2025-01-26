@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from .forms import RatingForm, RegisterUserForm, LoginForm, ArticleForm
 from .models import Article, Rating
-from .forms import RatingForm, RegisterUserForm, LoginForm
-from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Avg
-from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.db.models import Avg
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.decorators import login_required, permission_required
 
 
 # Create your views here.
@@ -18,20 +18,27 @@ def article_list(request):
 @permission_required('articles.add_score', raise_exception=True)
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    average_rating = article.ratings.aggregate(Avg('score'))['score__avg'] or 0
-    form = RatingForm()
+    rating = None
+    if request.user.has_perm('articles.add_rating'):
+        try:
+            rating = Rating.objects.get(article=article, judge=request.user)
+            form = RatingForm(instance=rating)
+        except Rating.DoesNotExist:
+            form = RatingForm()
 
-    if request.method == 'POST' and request.user.is_authenticated:
-        form = RatingForm(request.POST)
-        if form.is_valid():
-            rating, created = Rating.objects.update_or_create(
-                article=article, user=request.user, defaults=form.cleaned_data
-            )
-            return redirect('article_detail', pk=pk)
+        if request.method == 'POST':
+            form = RatingForm(request.POST, instance=rating)
+            if form.is_valid():
+                rating = form.save(commit=False)
+                rating.article = article
+                rating.judge = request.user
+                rating.save()
+                return redirect('article_detail', pk=pk)
+    else:
+        form = None
 
-    return render(request, 'journal/article_detail.html', {
-        'article': article, 'average_rating': average_rating, 'form': form
-    })
+    context = {'article': article, 'form': form}
+    return render(request, 'articles/article_detail.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -53,7 +60,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {username}!") # Optional message
-                return redirect('home') # Redirect to your home page or another appropriate URL
+                return redirect('article_list') # Redirect to your home page or another appropriate URL
             else:
                 messages.error(request, "Invalid username or password.")
         else:
@@ -65,12 +72,16 @@ def login_view(request):
 @login_required
 def create_article(request):
     if request.method == 'POST':
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST. request.FILES)
         if form.is_valid():
             article = form.save(commit=False)
             article.author = request.user
             article.save()
-            return redirect('article_detail', pk=article.pk)
+            return redirect('article_list')
     else:
         form = ArticleForm()
     return render(request, 'journal/create_article.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('article_list')

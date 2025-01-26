@@ -8,13 +8,17 @@
     <h2>Ratings</h2>
     <p>Average Rating: {{ average_rating|floatformat:1 }}</p>
 
-    {% if user.is_authenticated and user.groups.filter(name='Judges').exists %}
-        <h2>Rate this Article</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit">Submit Rating</button>
-        </form>
+    {% if user.is_authenticated %}
+        {% if user.groups.filter(name='Judges').exists %}
+            <h2>Rate this Article</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit">Submit Rating</button>
+            </form>
+        {% else %}
+            <p>Only Judges can rate articles.</p>
+        {% endif %}
     {% else %}
         <p>Please <a href="{% url 'login' %}">log in</a> to rate this article.</p>
     {% endif %}

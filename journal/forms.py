@@ -1,6 +1,14 @@
 from django import forms
-from .models import Rating
+from .models import Article, Rating
 from django.contrib.auth.forms import UserCreationForm
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title', 'summary', 'pdf_file', 'image']
+        widgets = {
+            'summary': forms.Textarea(attrs={'rows': 3})
+        }
 
 class RatingForm(forms.ModelForm):
     class Meta:
