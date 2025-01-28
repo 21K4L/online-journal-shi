@@ -64,3 +64,14 @@ label {
     text-align: center;
     margin-top: 15px;
 }
+.navbar-item figure img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.navbar-item figure img:hover {
+    transform: scale(1.1);
+}

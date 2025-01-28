@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<section class="hero is-primary is-medium">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">{{ user.username|title }}'s Profile</h1>
+      <h2 class="subtitle">Your account details at a glance</h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <div class="card">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-center">
+                <!-- Center the profile picture -->
+                <figure class="image is-128x128" style="margin: 0 auto;">
+                  {% if user.profile.prof_picture %}
+                    <img class="is-rounded" src="{{ user.profile.prof_picture.url }}" alt="{{ user.username }}'s Profile Picture" style="border-radius: 50%; object-fit: cover; width: 128px; height: 128px;">
+                  {% else %}
+                    <img class="is-rounded" src="{% static 'default_profile.png' %}" alt="Default Profile Picture" style="border-radius: 50%; object-fit: cover; width: 128px; height: 128px;">
+                  {% endif %}
+                </figure>
+              </div>
+            </div>
+
+            <!-- Full Name Under Profile Picture -->
+            <div style="margin-top: 15px;">
+              {% if user.first_name or user.last_name %}
+                <p class="title is-5">{{ user.first_name }} {{ user.last_name }}</p>
+              {% else %}
+                <p class="title is-5">No full name provided</p>
+              {% endif %}
+            </div>
+
+            <div class="content" style="margin-top: 15px;">
+              <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio provided" }}</p>
+              <p><strong>Location:</strong> {{ user.profile.location|default:"Not specified" }}</p>
+              <!-- Added Role Information -->
+              <p><strong>Role:</strong> {{ user.userprofile.get_role_display|default:"Not specified" }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Profile Button -->
+        <div class="has-text-centered" style="margin-top: 20px;">
+          <a href="{% url 'edit_profile' %}" class="button is-primary is-medium">
+            Edit Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

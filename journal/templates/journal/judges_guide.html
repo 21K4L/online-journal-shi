@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Judge Guide{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="hero is-info is-medium">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Judges Guide</h1>
+            <h2 class="subtitle">A guide for judges using the system.</h2>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="card">
+        <div class="card-content">
+            <div class="content user-guide-content">
+                <h3 dir="ltr">Welcome, Judges!</h3>
+                <p>
+                    راهنمای داوران گرامی: (لطفاً به موارد زیر توجه فرمایید)
+                </p>
+                <ol class="persian-list">
+                    <li>داوران موظف به رعایت اصول اخلاق حرفه‌ای و حفظ بی‌طرفی در داوری مقالات می‌باشند.</li>
+                    <li>ارزیابی مقالات باید بر اساس معیارهای علمی و تخصصی و با دقت و انصاف انجام شود.</li>
+                    <li>داوران باید از هرگونه تعارض منافع احتمالی خودداری نمایند و در صورت وجود هرگونه ابهام، به سردبیر اطلاع دهند.</li>
+                    <li>نظرات و پیشنهادات داوران باید به صورت مستدل و واضح بیان شود تا نویسندگان بتوانند از آنها بهره‌مند شوند.</li>
+                    <li>داوران باید در موعد مقرر نسبت به ارسال گزارش داوری اقدام نمایند.</li>
+                    <li>گزارش داوری باید شامل نقاط قوت و ضعف مقاله، پیشنهادات اصلاحی و نتیجه نهایی (پذیرش، اصلاح با ویرایش، یا رد مقاله) باشد.</li>
+                    <li>داوران محترم می‌توانند در صورت نیاز به اطلاعات بیشتر یا ابهام در مورد مقاله، با سردبیر یا دبیر اجرایی نشریه تماس بگیرند.</li>
+                    <li>حفظ محرمانگی اطلاعات مربوط به مقالات ارسالی الزامی است.</li>
+                </ol>
+
+                <p style="direction: ltr; text-align: left;">
+                    If you have any questions, feel free to <a href="{% url 'contact' %}">Contact Us</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %} <script>
+    function convertToPersianNumber(num) {
+        const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        return String(num).replace(/\d/g, d => persianNumbers[d]);
+    }
+</script> {% endcomment %}
+{% endblock %}

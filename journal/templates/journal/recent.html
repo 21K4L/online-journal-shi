@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load humanize %} {# Load the humanize template tags #}
+
+{% block title %}Recent Articles{% endblock %}
+
+{% block content %}
+<section class="hero is-primary is-medium">
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">Recent Articles</h1>
+            <h2 class="subtitle">Check out the latest articles.</h2>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if recent_articles %}
+        <div class="columns is-multiline">
+            {% for article in recent_articles %}
+            <div class="column is-one-third">
+                <div class="card">
+                    {% if article.image %}
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                            <img src="{{ article.image.url }}" alt="{{ article.title }}">
+                        </figure>
+                    </div>
+                    {% endif %}
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <p class="title is-4">{{ article.title }}</p>
+                                <p class="subtitle is-6">By {{ article.author.username }}</p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            {% if article.summary %}
+                            <p>{{ article.summary|truncatewords:20 }} {% if article.summary|length > 20 %} <a href="{% url 'article_detail' article.pk %}">Read More</a>{% endif %}</p>
+                            {% endif %}
+                            <br>
+                            <time datetime="{{ article.created_at }}">{{ article.created_at|naturaltime }}</time>
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <a href="{% url 'article_detail' article.pk %}" class="card-footer-item">View</a>
+                        {% if article.pdf_file %}
+                            <a href="{{ article.pdf_file.url }}" class="card-footer-item" target="_blank">PDF</a>
+                        {% endif %}
+                    </footer>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="notification is-info">
+            <p>No recent articles found.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

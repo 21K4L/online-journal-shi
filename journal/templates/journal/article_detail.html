@@ -1,25 +1,100 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+
 {% block content %}
-    <h1>{{ article.title }}</h1>
-    <p>By {{ article.author }}</p>
-    <p>{{ article.content }}</p>
+<div class="container py-5">
+    <!-- Article Title and Author -->
+    <div class="box has-background-light p-5">
+        <h1 class="title has-text-primary">{{ article.title }}</h1>
+        <p class="subtitle">
+            <strong>By:</strong> {{ article.author }} | 
+            <strong>Published On:</strong> {{ article.created_at|date:"F j, Y" }}
+        </p>
+        <p class="content">{{ article.summary }}</p>
+    </div>
 
-    <h2>Ratings</h2>
-    <p>Average Rating: {{ average_rating|floatformat:1 }}</p>
-
-    {% if user.is_authenticated %}
-        {% if user.groups.filter(name='Judges').exists %}
-            <h2>Rate this Article</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit">Submit Rating</button>
-            </form>
+    <!-- Attached Files -->
+    <h2 class="title is-4 mt-5">Attached Files</h2>
+    <div class="attached-files">
+        <!-- Display PDF File -->
+        {% if article.pdf_file %}
+            <div class="box is-flex is-align-items-center">
+                <div class="pdf-thumbnail">
+                    <a href="{{ article.pdf_file.url }}" target="_blank">
+                        <img src="{% static 'images/pdf_icon.png' %}" alt="PDF Icon" class="image is-96x96">
+                    </a>
+                </div>
+                <div class="pdf-details ml-4">
+                    <h3 class="title is-5">PDF File</h3>
+                    <a href="{{ article.pdf_file.url }}" class="button is-link is-small" target="_blank">View PDF</a>
+                    <a href="{{ article.pdf_file.url }}" class="button is-primary is-small" download>Download PDF</a>
+                </div>
+            </div>
         {% else %}
-            <p>Only Judges can rate articles.</p>
+            <p>No PDF attached to this article.</p>
+        {% endif %}
+
+        <!-- Display Image Files -->
+        {% if article.image %}
+            <div class="box">
+                <h3 class="title is-5">Attached Image</h3>
+                <figure class="image" style="max-width: 400px; margin: 0 auto;">
+                    <img src="{{ article.image.url }}" alt="Article Image" style="width: 100%; height: auto; border-radius: 8px;">
+                </figure>
+                <a href="{{ article.image.url }}" class="button is-link is-small mt-2" download>Download Image</a>
+            </div>
+        {% else %}
+            <p>No image attached to this article.</p>
+        {% endif %}
+    </div>
+
+    <!-- Ratings Section -->
+    <h2 class="title is-4 mt-5">Ratings and Comments</h2>
+    {% if ratings_with_comments %}
+        <div class="comments-section">
+            {% for rating in ratings_with_comments %}
+                <div class="box">
+                    <p>
+                        <strong>{{ rating.judge.username }}</strong> rated 
+                        <strong>{{ rating.score }}</strong>/5
+                    </p>
+                    {% if rating.comment %}
+                        <p><em>Comment:</em> {{ rating.comment }}</p>
+                    {% else %}
+                        <p><em>No comment provided.</em></p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No ratings or comments yet.</p>
+    {% endif %}
+
+    <!-- Average Rating -->
+    <h3 class="title is-5 mt-5">Average Rating</h3>
+    <p><strong>Average Score:</strong> {{ average_rating|floatformat:1 }}</p>
+
+    <!-- Rate and Comment Form -->
+    {% if user.is_authenticated %}
+        {% if user.userprofile.role == 'judge' %}
+            <div class="box mt-5">
+                <h2 class="title is-5">Rate and Comment on this Article</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <a href="{% url 'add_rating' article.pk %}" type="submit" class="button is-primary">Submit Rating</a>
+                </form>
+            </div>
+        {% else %}
+            <p class="notification is-warning">
+                Only users with the <strong>Judge</strong> role can rate and comment on this article.
+            </p>
         {% endif %}
     {% else %}
-        <p>Please <a href="{% url 'login' %}">log in</a> to rate this article.</p>
+        <p class="notification is-info">
+            Please <a href="{% url 'login' %}">log in</a> to rate and comment on this article.
+        </p>
     {% endif %}
+</div>
 {% endblock %}

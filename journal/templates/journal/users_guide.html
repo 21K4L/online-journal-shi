@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Users Guide{% endblock %}
+{% load static %}
+
+{% block content %}
+<section class="hero is-info is-medium">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Users Guide</h1>
+            <h2 class="subtitle">Your step-by-step guide to getting started with My Journal.</h2>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="card">
+        <div class="card-content">
+            <div class="content user-guide-content">
+                <h3 dir="ltr">Welcome!</h3>
+                <p>
+                    <strong>توجه:</strong> (در صورت عدم رعایت شرایط ذیل به هیچ عنوان مقاله پذیرش نمی‌شود)
+                </p>
+                <ol class="persian-list">
+                    <li>ارسال مقاله‌ها باید به‌صورت انحصاری از طریق وب‌سایت فصلنامه انجام شود و از ارسال به ایمیل فصلنامه خودداری شود.</li>
+                    <li>محتوای مقاله باید کاملاً منطبق با اهداف نشریه باشد و حاصل پژوهش‌ها و تجربه‌های نویسنده باشد.</li>
+                    <li>فصلنامه عمدتاً مقالات علمی پژوهشی، علمی ترویجی، و علمی مروری را می‌پذیرد.</li>
+                    <li>مقاله نباید پیش‌تر در نشریه دیگری یا به زبانی دیگر منتشر شده باشد و همزمان برای سایر نشریات ارسال نشده باشد.</li>
+                    <li>هیئت تحریریه مجاز به انتخاب، ویرایش، تلخیص، یا اصلاح مقالات هستند.</li>
+                    <li>فرم تعهد اصالت مقاله باید توسط نویسنده مسئول مکاتبات تکمیل و امضا شود.</li>
+                    <li>در صورت امکان از معادل فارسی کلمات لاتین استفاده شود و در غیر این صورت، کلمه لاتین به‌صورت زیرنویس آورده شود.</li>
+                    <li>مطالب مقاله باید برگرفته از منابع معتبر باشد که در بخش منابع و مآخذ به آن‌ها اشاره شده است.</li>
+                </ol>
+
+                <p style="direction: ltr; text-align: left;">
+                    If you have any questions, feel free to <a href="{% url 'contact' %}">Contact Us</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

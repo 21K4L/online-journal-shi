@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to My Journal</h1>
+        <p>Explore engaging articles that spark curiosity and provide insights on various topics.</p>
+        <a href="{% url 'article_list' %}" class="btn-primary">View All Articles</a>
+    </div>
+</section>
+
+<div class="container">
+    <div class="columns">
+        <!-- Featured Articles Section -->
+        <div class="column">
+            <section class="featured-articles">
+                <h2 class="section-title">Featured Articles</h2>
+                <ul class="article-list">
+                    {% for article in featured_articles %}
+                    <li class="article-item">
+                        <a href="{% url 'article_detail' article.pk %}" class="article-title">{{ article.title }}</a>
+                        <p class="article-summary">{{ article.summary|truncatewords:20 }}</p>
+                    </li>
+                    {% empty %}
+                    <p class="no-articles">No featured articles available at the moment.</p>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+
+        <!-- Recent Articles Section -->
+        <div class="column">
+            <section class="recent-articles">
+                <h2 class="section-title">Recent Articles</h2>
+                <ul class="article-list">
+                    {% for article in recent_articles %}
+                    <li class="article-item">
+                        <a href="{% url 'article_detail' article.pk %}" class="article-title">{{ article.title }}</a>
+                        <p class="article-summary">{{ article.summary|truncatewords:20 }}</p>
+                    </li>
+                    {% empty %}
+                    <p class="no-articles">No recent articles available at the moment.</p>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

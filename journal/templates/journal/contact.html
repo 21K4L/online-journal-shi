@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="hero is-primary is-medium">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">Contact Us</h1>
+      <h2 class="subtitle">Get in touch with us.</h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-half is-offset-one-quarter"> {# Center the form #}
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }} {# Render the form fields #}
+          <div class="field">
+            <div class="control">
+              <button class="button is-primary" type="submit">Submit</button>
+            </div>
+          </div>
+        </form>
+          {% if form.errors %}
+              <div class="notification is-danger">
+                  Please correct the errors below.
+              </div>
+          {% endif %}
+          {% if submitted %}
+              <div class="notification is-success">
+                  Your message has been sent!
+              </div>
+          {% endif %}
+      </div>
+    </div>
+      <div class="contact-info" style="direction: ltr; text-align: left;">
+        <div class="content has-text-centered">
+            <p>Or reach us directly at:</p>
+            <p>Email: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+            <p>Phone: {{ contact_phone }}</p>
+            <p>Address: {{ contact_address }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,34 +1,52 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login{% endblock %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 {% block content %}
-<div class="auth-container">
-    <h2 class="auth-title">Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {% if form.errors %}
-            <div class="alert alert-danger">
-                Please correct the errors below.
+<section class="auth-section">
+    <div class="auth-container">
+        <h2 class="auth-title">Login</h2>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Please correct the errors below.
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
-        {% endif %}
-        <div class="form-group">
-            {{ form.username.label_tag }}
-            {{ form.username }}
-            {% if form.username.errors %}
-                <ul class="errorlist">{{ form.username.errors }}</ul>
-            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="auth-link">
+            <p>Don't have an account? <a href="{% url 'register' %}" class="btn-link">Register here</a></p>
         </div>
-        <div class="form-group">
-            {{ form.password.label_tag }}
-            {{ form.password }}
-            {% if form.password.errors %}
-                <ul class="errorlist">{{ form.password.errors }}</ul>
-            {% endif %}
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    <div class="auth-link">
-        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
     </div>
-</div>
+</section>
 {% endblock %}

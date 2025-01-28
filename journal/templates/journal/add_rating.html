@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Rate Article{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Rate Article: {{ article.title }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button is-primary">Submit Rating</button>
+    </form>
+
+    <a href="{% url 'article_detail' article.pk %}" class="button is-light">Cancel</a>
+</div>
+{% endblock %}

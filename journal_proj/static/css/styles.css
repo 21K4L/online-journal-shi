@@ -1,0 +1,557 @@
+@import "journal_proj/static";
+/* General Reset and Global Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #0077b6, #00b4d8);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .navbar-item {
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar .navbar-item:hover {
+  color: #ffd60a;
+}
+
+.navbar .btn-primary {
+  background: #ffd60a;
+  color: #0077b6;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.navbar .btn-primary:hover {
+  background: #f4b700;
+}
+
+.navbar .profile-button {
+  margin-left: auto; /* Pushes the profile button to the far-right */
+}
+
+.navbar .profile-button img {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 38px;
+  height: 38px;
+  border: 2px solid #ccc; /* Optional: add a border for styling */
+  cursor: pointer;
+}
+
+/* General Button Styles */
+button, .btn-primary {
+  padding: 8px 12px; /* Smaller button size */
+  font-size: 0.9rem; /* Smaller font size for buttons */
+}
+
+button:hover, .btn-primary:hover {
+  background: #005f86;
+  transform: translateY(-2px);
+}
+
+button:active, .btn-primary:active {
+  background: #003f5f;
+  transform: translateY(0);
+}
+
+/* Section Styles */
+section {
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.section-dark {
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: white;
+}
+
+.section-dark h2 {
+  color: #ffd60a;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #0077b6;
+  text-align: center;
+}
+
+.section-title-light {
+  color: #ffd60a;
+}
+
+.section-content {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-top: 1rem;
+}
+
+/* Card Styles */
+.card {
+  border-radius: 12px; /* Rounded corners */
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 2rem; /* Add padding inside the card */
+}
+
+/* Optional: Add some padding to the body section */
+.card-body {
+  padding: 2rem; /* Space inside the card body */
+}
+
+/* Articles Section */
+.articles-list {
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* Articles Grid */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Article Card */
+.article-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Article Title */
+.article-title a {
+  font-size: 1.25rem;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.article-title a:hover {
+  color: #0056b3;
+}
+
+/* Article Author */
+.article-author {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+/* Article Snippet */
+.article-snippet {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+/* Create Article Button */
+.create-article-link {
+  text-align: center;
+}
+
+.btn-create-article {
+  background: #007bff;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.btn-create-article:hover {
+  background: #0056b3;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: white;
+  text-align: center;
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.hero .title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.hero .subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.hero .btn-primary {
+  background-color: #ffd60a; /* Bright yellow */
+  color: #007bff; /* Blue text */
+  text-decoration: none; /* Remove underline */
+  padding: 10px 20px; /* Add more padding for size */
+  font-size: 1.2rem; /* Increase font size */
+  font-weight: bold; /* Make the text bold */
+  border-radius: 8px; /* Smooth rounded corners */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Add a hover effect */
+  display: inline-block; /* Prevent button from collapsing */
+}
+
+.hero .btn-primary:hover {
+  background-color: #ffcc00; /* Slightly darker yellow on hover */
+  transform: translateY(-3px); /* Subtle upward movement on hover */
+}
+
+/* Footer Styles */
+footer {
+  background: #0077b6;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+  font-size: 1rem;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer a {
+  color: #ffd60a;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    max-width: 90%; /* Fit smaller screens */
+    padding: 15px;
+  }
+
+  .auth-section {
+    height: 80vh; /* Adjust for smaller screens */
+  }
+
+  input, select, textarea {
+    width: 100%; /* Take full width on smaller screens */
+  }
+
+  .form-row {
+    flex-direction: column; /* Stack fields vertically on small screens */
+    gap: 10px; /* Adjust gap for vertical layout */
+  }
+
+  .navbar .navbar-item {
+    margin: 0.5rem 0;
+  }
+
+  section {
+    padding: 2rem 1rem;
+  }
+
+  .hero .title {
+    font-size: 2.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: 1rem;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  footer {
+    font-size: 0.9rem;
+  }
+}
+
+/* Centering and improving the container */
+.auth-container {
+  width: 100%;
+  max-width: 500px; /* Increase max-width to make the container wider */
+  margin: 0 auto;
+  padding: 20px; /* Increase padding for more spacing */
+  background-color: #fff;
+  border-radius: 8px; /* Slightly increase border radius for smooth edges */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Reduce height for input fields inside the registration form */
+.auth-container input, 
+.auth-container select, 
+.auth-container textarea {
+  width: 90%; /* Keep consistent width */
+  padding: 6px; /* Reduce padding to make the fields smaller */
+  margin: 4px auto; /* Reduce the margin between fields */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.85rem; /* Slightly smaller font size */
+  display: block;
+}
+
+.auth-container .form-group {
+  margin-bottom: 8px; /* Reduce spacing between form groups */
+}
+
+.auth-container .form-row {
+  gap: 8px; /* Reduce gap between form fields in rows */
+}
+
+.auth-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background-color: #f9f9f9;
+  padding: 20px 0; /* Add some padding to ensure spacing around the container */
+}
+
+/* Arrange specific fields side by side */
+.form-row {
+  display: flex;
+  gap: 20px; /* Increase spacing between fields */
+  justify-content: space-between;
+}
+
+.form-row .form-group {
+  flex: 1; /* Allow fields to take equal width */
+  min-width: 0; /* Prevents overflow in smaller containers */
+}
+
+/* Labels and input adjustments */
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%; /* Fill the available space */
+  padding: 6px; /* Keep padding compact */
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+/* General styling for input fields */
+input, select, textarea {
+  width: 100%; /* Ensure fields are 100% width within their container */
+  padding: 12px; /* Increase padding for more space inside the fields */
+  margin: 8px 0; /* Reduce margin slightly */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem; /* Slightly larger text size */
+  display: block; /* Center fields in the container */
+}
+
+/* Focused input fields styling */
+input:focus, select:focus, textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+
+/* Error message styling */
+.errorlist {
+  color: red;
+  font-size: 0.9em;
+}
+
+/* Form groups and spacing */
+.form-row {
+    display: flex;
+    justify-content: space-between; /* Add space between the fields */
+    gap: 15px; /* Optional spacing between fields */
+}
+
+.form-row .form-group {
+    flex: 1; /* Make both fields equal width */
+    min-width: 0; /* Prevent fields from overflowing */
+}
+
+.form-group label {
+  font-size: 0.85rem; /* Smaller label text */
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+/* General Styles */
+.container {
+  margin-top: 2rem;
+}
+
+.box {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.image {
+  border-radius: 10px;
+}
+
+.image img {
+  max-width: 400px; /* Adjust as needed */
+  height: auto;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
+
+.attached-files {
+  margin-top: 1.5rem;
+}
+
+/* Button Styling */
+.button {
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+/* Ratings Section */
+.comments-section .box {
+  background-color: #f9f9f9;
+  border-left: 5px solid #00d1b2;
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url("{% static 'fonts/Vazirmatn-RD-Regular.woff2' %}") format('woff2'),
+       url("{% static 'fonts/Vazirmatn-Regular.woff2' %}") format('woff'),
+       url("{% static 'fonts/Vazirmatn-Regular.ttf' %}") format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.user-guide-content {
+  direction: rtl;
+  font-family: 'Vazirmatn', sans-serif;
+  text-align: justify;
+  line-height: 1.7;
+}
+
+.persian-list {
+  font-family: 'Vazir', sans-serif;
+  font-size: 1.2rem;
+  line-height: 2;
+  text-align: right;
+  direction: rtl;
+  margin: 0;
+  padding: 0 1.5rem;
+  list-style: none;
+  list-style-type: none; /* Remove default numbering */
+}
+
+.persian-list li {
+  margin-bottom: 0.5rem;
+  list-style: none;
+  counter-increment: list-counter; /* Increment custom counter */
+  position: relative;
+}
+
+.persian-list .content p {
+  direction: rtl;
+  text-align: right;
+  font-family: 'IranSans', 'Vazir', sans-serif;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.persian-list li::before {
+  content: counter(list-counter, persian) ". "; /* Use Persian numerals */
+  font-family: 'Vazir', sans-serif;
+  direction: rtl;
+  margin-left: 0.5rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column; /* Ensure vertical stacking of the items */
+  justify-content: center;
+  align-items: center;
+  text-align: left; /* Align text to the left */
+  direction: ltr !important; /* Force LTR layout */
+  margin-top: 20px;
+  width: 100%; /* Ensure it takes full width if needed */
+}
+
+.contact-info .content {
+  max-width: 400px; /* Optional: Restrict width for better readability */
+  text-align: left; /* Align the inner text */
+}

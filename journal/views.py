@@ -1,54 +1,156 @@
-from .forms import RatingForm, RegisterUserForm, LoginForm, ArticleForm
-from .models import Article, Rating
+from sqlite3 import IntegrityError
+from django.conf import settings
+from .forms import ContactMessageForm, RatingForm, LoginForm, ArticleForm, ContactMessageForm, UserForm, ProfileForm, UserRegistrationForm
+from .models import Article, Rating, Profile
 from django.contrib import messages
 from django.db.models import Avg
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import Group, Permission
-from django.contrib.auth.decorators import login_required, permission_required
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+import datetime
 
 
 # Create your views here.
+
+
+def home(request):
+    featured_articles = Article.objects.filter(is_featured=True).order_by('-created_at')[:5]  # Get the 3 most recent featured articles
+    recent_articles = Article.objects.order_by('-created_at')[:5]  # Get the 5 most recent articles
+    return render(request, 'journal/home.html', {
+                'featured_articles': featured_articles,
+                'recent_articles': recent_articles
+                })
+
+
+def about(request):
+    about_content = "<h1>This is dynamic content from the view.</h1><p>You can add more HTML here.</p>"
+    return render(request, 'journal/about.html', {'about_content': about_content})
+
+
+def contact(request):
+    submitted = False
+    if request.method == 'POST':
+        form = ContactMessageForm(request.POST)
+        if form.is_valid():
+            form.save()  # This will automatically save to the ContactMessage model
+            messages.success(request, 'Your message has been sent successfully!')
+            submitted = True
+            return redirect('contact')  # Redirect after form submission
+    else:
+        form = ContactMessageForm()
+
+    return render(request, 'journal/contact.html', {
+        'form': form,
+        'submitted': submitted,
+        'contact_email': 'test@test.com',
+        'contact_phone': '1234567890',
+        'contact_address': 'test address',
+    })
+
+
+@login_required
+def create_article(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            return redirect('article_list')
+    else:
+        form = ArticleForm()
+    return render(request, 'journal/create_article.html', {'form': form})
+
 
 def article_list(request):
     articles = Article.objects.all().order_by('-created_at')
     return render(request, 'journal/article_list.html', {'articles': articles})
 
-@login_required
-@permission_required('articles.add_score', raise_exception=True)
+
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    rating = None
-    if request.user.has_perm('articles.add_rating'):
-        try:
-            rating = Rating.objects.get(article=article, judge=request.user)
-            form = RatingForm(instance=rating)
-        except Rating.DoesNotExist:
-            form = RatingForm()
 
-        if request.method == 'POST':
-            form = RatingForm(request.POST, instance=rating)
-            if form.is_valid():
+    # Calculate the average rating for the article
+    average_rating = article.ratings.aggregate(Avg('score'))['score__avg'] or 0
+
+    # Retrieve all ratings with comments
+    ratings_with_comments = article.ratings.filter(comment__isnull=False).order_by('-id')
+
+    # Fetch the user's rating if they are a judge
+    user_rating = None
+    if request.user.is_authenticated and request.user.userprofile.role == 'judge':
+        try:
+            user_rating = Rating.objects.get(article=article, judge=request.user)
+        except Rating.DoesNotExist:
+            user_rating = None
+
+    context = {
+        'article': article,
+        'average_rating': average_rating,
+        'ratings_with_comments': ratings_with_comments,
+        'user_rating': user_rating,  # Show user's previous rating if needed
+    }
+    return render(request, 'journal/article_detail.html', context)
+
+
+@login_required
+def add_rating(request, pk):
+    # Ensure the user has the Judge role
+    if not request.user.is_authenticated or request.user.userprofile.role != 'judge':
+        messages.error(request, "You are not authorized to rate articles.")
+        return redirect('article_detail', pk=pk)
+
+    article = get_object_or_404(Article, pk=pk)
+
+    try:
+        # Try to fetch the existing rating for the article by the user
+        rating = Rating.objects.get(article=article, judge=request.user)
+        form = RatingForm(instance=rating)
+    except Rating.DoesNotExist:
+        rating = None
+        form = RatingForm()
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST, instance=rating)
+        if form.is_valid():
+            try:
                 rating = form.save(commit=False)
                 rating.article = article
                 rating.judge = request.user
                 rating.save()
-                return redirect('article_detail', pk=pk)
-    else:
-        form = None
+                messages.success(request, "Your rating was successfully submitted.")
+            except IntegrityError as e:
+                messages.error(request, f"Database error occurred: {e}")
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred: {e}")
+            return redirect('article_detail', pk=pk)
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-    context = {'article': article, 'form': form}
-    return render(request, 'articles/article_detail.html', context)
+    context = {
+        'article': article,
+        'form': form,
+    }
+    return render(request, 'journal/add_rating.html', context)
+
+
+def recent_articles(request):
+    recent = Article.objects.filter(created_at__gte=timezone.now() - datetime.timedelta(days=1)).order_by('-created_at')
+    return render(request, 'journal/recent.html', {'recent_articles': recent})
+
 
 def register(request):
     if request.method == 'POST':
-        form = RegisterUserForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
     else:
-        form = RegisterUserForm()
+        form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -69,19 +171,41 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'registration/login.html', {'form': form})
 
-@login_required
-def create_article(request):
-    if request.method == 'POST':
-        form = ArticleForm(request.POST. request.FILES)
-        if form.is_valid():
-            article = form.save(commit=False)
-            article.author = request.user
-            article.save()
-            return redirect('article_list')
-    else:
-        form = ArticleForm()
-    return render(request, 'journal/create_article.html', {'form': form})
 
 def logout_view(request):
     logout(request)
     return redirect('article_list')
+
+
+@login_required
+def profile_view(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        # Create a profile if it doesn't exist
+        profile = Profile.objects.create(user=request.user)
+    return render(request, 'profile/profile.html', {'profile': profile})
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+
+    return render(request, 'profile/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+def users_guide(request):
+    return render(request, 'journal/users_guide.html')
+
+
+def judges_guide(request):
+    return render(request, 'journal/judges_guide.html')
