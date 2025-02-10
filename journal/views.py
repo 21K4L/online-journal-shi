@@ -52,20 +52,27 @@ def contact(request):
 
 @login_required
 def create_article(request):
+    # Check if the user is approved
+    if request.user.userprofile.status != 'approved':
+        messages.error(request, "Your account is not approved to submit articles.")
+        return redirect('article_list')
+
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
             article = form.save(commit=False)
             article.author = request.user
             article.save()
+            messages.success(request, "Article successfully submitted!")
             return redirect('article_list')
     else:
         form = ArticleForm()
+
     return render(request, 'journal/create_article.html', {'form': form})
 
 
 def article_list(request):
-    articles = Article.objects.all().order_by('-created_at')
+    articles = Article.objects.filter(status='approved').order_by('-created_at')
     return render(request, 'journal/article_list.html', {'articles': articles})
 
 
@@ -97,12 +104,22 @@ def article_detail(request, pk):
 
 @login_required
 def add_rating(request, pk):
-    # Ensure the user has the Judge role
-    if not request.user.is_authenticated or request.user.userprofile.role != 'judge':
+    # Ensure the user is authenticated and has the Judge role
+    if request.user.userprofile.role != 'judge':
         messages.error(request, "You are not authorized to rate articles.")
         return redirect('article_detail', pk=pk)
 
+    # Ensure the user's account is approved
+    if request.user.userprofile.status != 'approved':
+        messages.error(request, "Your account is not approved to add ratings.")
+        return redirect('article_detail', pk=pk)
+
     article = get_object_or_404(Article, pk=pk)
+
+    # Ensure the judge's branch matches the article's branch
+    if request.user.userprofile.branch != article.branch:
+        messages.error(request, "You can only rate articles in your designated branch.")
+        return redirect('article_detail', pk=pk)
 
     try:
         # Try to fetch the existing rating for the article by the user
@@ -147,6 +164,8 @@ def register(request):
         if form.is_valid():
             form.save()
             return redirect('login')
+        else:
+            print(form.errors)
     else:
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -184,21 +203,23 @@ def profile_view(request):
     except Profile.DoesNotExist:
         # Create a profile if it doesn't exist
         profile = Profile.objects.create(user=request.user)
-    return render(request, 'profile/profile.html', {'profile': profile})
+    # Check if the user has uploaded any articles
+    articles = Article.objects.filter(author=request.user)
+    return render(request, 'profile/profile.html', {'profile': profile, 'articles': articles})
 
 
 @login_required
 def edit_profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.userprofile, user=request.user)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
             return redirect('profile')
     else:
         user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
+        profile_form = ProfileForm(instance=request.user.userprofile, user=request.user)
 
     return render(request, 'profile/edit_profile.html', {'user_form': user_form, 'profile_form': profile_form})
 

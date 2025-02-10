@@ -46,6 +46,20 @@
               <p><strong>Location:</strong> {{ user.profile.location|default:"Not specified" }}</p>
               <!-- Added Role Information -->
               <p><strong>Role:</strong> {{ user.userprofile.get_role_display|default:"Not specified" }}</p>
+              {% if user.userprofile.role == 'judge'%}
+                <p><strong>Branch:</strong> {{ user.userprofile.get_branch_display|default:"Not specified" }}</p>
+              {% endif %}
+              <p><strong>Status:</strong>
+                {% if user.userprofile.status == 'approved' %}
+                  <span class="tag is-success is-medium">Approved</span>
+                {% elif user.userprofile.status == 'pending' %}
+                  <span class="tag is-warning is-medium">Pending Approval</span>
+                {% elif user.userprofile.status == 'rejected' %}
+                  <span class="tag is-danger is-medium">Rejected</span>
+                {% else %}
+                  <span class="tag is-light is-medium">Unknown</span>
+                {% endif %}
+              </p>
             </div>
           </div>
         </div>
@@ -56,6 +70,41 @@
             Edit Profile
           </a>
         </div>
+      </div>
+    </div>
+    <!-- Articles Section -->
+    <div class="section">
+      <div class="container">
+        <h2 class="title is-4">Your Articles</h2>
+
+        <!-- Debugging output -->
+        <strong>Articles count: {{ articles|length }}</strong>
+
+        {% if articles %}
+          <ul>
+            {% for article in articles %}
+              <li>
+                <div class="article-card">
+                  <p><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></p>
+                  <p class="article-status"><strong>Status:</strong>
+                    {% if article.status == 'approved' %}
+                      <span class="tag is-success is-medium">Approved</span>
+                    {% elif article.status == 'pending' %}
+                      <span class="tag is-warning is-medium">Pending Approval</span>
+                    {% elif article.status == 'denied' %}
+                      <span class="tag is-danger is-medium">Denied</span>
+                    {% endif %}
+                  </p>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>You haven't uploaded any articles yet.</p>
+          <a href="{% url 'create_article' %}" class="button is-primary is-medium">
+            Submit Your First Article
+          </a>
+        {% endif %}
       </div>
     </div>
   </div>

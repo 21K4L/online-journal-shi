@@ -38,12 +38,14 @@
                 <h2 class="section-title">Recent Articles</h2>
                 <ul class="article-list">
                     {% for article in recent_articles %}
-                    <li class="article-item">
-                        <a href="{% url 'article_detail' article.pk %}" class="article-title">{{ article.title }}</a>
-                        <p class="article-summary">{{ article.summary|truncatewords:20 }}</p>
-                    </li>
+                        {% if article.status == 'approved'%}
+                            <li class="article-item">
+                                <a href="{% url 'article_detail' article.pk %}" class="article-title">{{ article.title }}</a>
+                                <p class="article-summary">{{ article.summary|truncatewords:20 }}</p>
+                            </li>
+                        {% endif %}
                     {% empty %}
-                    <p class="no-articles">No recent articles available at the moment.</p>
+                        <p class="no-articles">No recent articles available at the moment.</p>
                     {% endfor %}
                 </ul>
             </section>

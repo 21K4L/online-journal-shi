@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 
 
 class ArticleForm(forms.ModelForm):
+    branch = forms.ChoiceField(choices=UserProfile.BRANCH_CHOICES, required=True)
     class Meta:
         model = Article
-        fields = ['title', 'summary', 'pdf_file', 'image']
+        fields = ['title', 'summary', 'pdf_file', 'image', 'branch']
         widgets = {
             'summary': forms.Textarea(attrs={'rows': 3})
         }
@@ -43,7 +44,7 @@ class ContactMessageForm(forms.ModelForm):
 
 class UserRegistrationForm(UserCreationForm):
     role = forms.ChoiceField(choices=UserProfile.ROLE_CHOICES, required=True)
-
+    
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'role']
@@ -70,5 +71,13 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['bio', 'prof_picture', 'location']
+        fields = ['bio', 'prof_picture', 'location', 'branch']
+        widgets = {
+            'branch': forms.Select(attrs={'class': 'form-control'}),
+        }
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Pass user when initializing the form
+        super().__init__(*args, **kwargs)
+        if user and user.userprofile.role != 'judge':  # Hide branch if not a judge
+            self.fields.pop('branch')

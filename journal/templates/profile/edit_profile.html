@@ -20,7 +20,26 @@
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ user_form.as_p }}
-            {{ profile_form.as_p }}
+            {% for field in profile_form%}
+              {% if field.name != 'branch' %}
+                <div class="field">
+                  {{ field.label_tag }}
+                  <div class="control">
+                    {{ field }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor%}
+
+            {% if user.userprofile.role == 'judge' %}
+              <div class="field">
+                <label class="label">Educational Branch</label>
+                <div class="control">
+                  {{ profile_form.branch }}
+                </div>
+                <p class="help">This field is only available for judges.</p>
+              </div>
+            {% endif %}
 
             <!-- Role Field (Read-Only) -->
             <div class="field">

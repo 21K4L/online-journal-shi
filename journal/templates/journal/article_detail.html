@@ -78,14 +78,20 @@
     <!-- Rate and Comment Form -->
     {% if user.is_authenticated %}
         {% if user.userprofile.role == 'judge' %}
-            <div class="box mt-5">
-                <h2 class="title is-5">Rate and Comment on this Article</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <a href="{% url 'add_rating' article.pk %}" type="submit" class="button is-primary">Submit Rating</a>
-                </form>
-            </div>
+            {% if user.userprofile.status == 'approved'%}
+                <div class="box mt-5">
+                    <h2 class="title is-5">Rate and Comment on this Article</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <a href="{% url 'add_rating' article.pk %}" type="submit" class="button is-primary">Submit Rating</a>
+                    </form>
+                </div>
+            {% else %}
+            <p class="notification is-warning mt-3">
+                Your account is not approved to submit ratings. Please wait for approval.
+            </p>
+            {% endif %}
         {% else %}
             <p class="notification is-warning">
                 Only users with the <strong>Judge</strong> role can rate and comment on this article.

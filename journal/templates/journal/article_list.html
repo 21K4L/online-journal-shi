@@ -6,20 +6,24 @@
         <h1 class="section-title">Articles</h1>
         <div class="articles-grid">
             {% for article in articles %}
-            <div class="article-card">
-                <h2 class="article-title">
-                    <a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a>
-                </h2>
-                <p class="article-author">By: {{ article.author.username }}</p>
-                <p class="article-snippet">{{ article.content|truncatechars:100 }}</p>
-            </div>
+                <div class="article-card">
+                    <h2 class="article-title">
+                        <a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a>
+                    </h2>
+                    <p class="article-author">By: {{ article.author.username }}</p>
+                    <p class="article-snippet">{{ article.content|truncatechars:100 }}</p>
+                    <p class="article-status">Status: <strong>{{ article.get_status_display }}</strong></p>
+                    <p class="article-branch"><strong>Branch:</strong> {{ article.get_branch_display|default:"Not specified" }}</p>  <!-- Displaying the branch -->
+                </div>
             {% endfor %}
         </div>
 
-        {% if user.is_authenticated %}
-        <div class="create-article-link">
-            <a href="{% url 'create_article' %}" class="btn-create-article">Create Article</a>
-        </div>
+        {% if user.is_authenticated and user.userprofile.status == 'approved' %}
+            <div class="create-article-link">
+                <a href="{% url 'create_article' %}" class="btn-create-article">Create Article</a>
+            </div>
+        {% elif user.is_authenticated %}
+            <p class="notification is-warning mt-3">Your account is not approved to submit articles.</p>
         {% endif %}
     </div>
 </section>

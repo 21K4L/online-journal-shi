@@ -336,7 +336,7 @@ footer a:hover {
 .auth-container select, 
 .auth-container textarea {
   width: 90%; /* Keep consistent width */
-  padding: 6px; /* Reduce padding to make the fields smaller */
+  padding: 5px; /* Reduce padding to make the fields smaller */
   margin: 4px auto; /* Reduce the margin between fields */
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -415,15 +415,24 @@ input:focus, select:focus, textarea:focus {
 
 /* Error message styling */
 .errorlist {
-  color: red;
-  font-size: 0.9em;
+  width: 100%;
+  margin-bottom: 15px; /* Adds spacing below the error box */
+  padding: 10px;
+  background-color: #f8d7da; /* Red background for error */
+  color: #721c24; /* Text color for better contrast */
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  text-align: center;
+  box-sizing: border-box; /* Ensures padding doesn't overflow */
 }
 
 /* Form groups and spacing */
 .form-row {
     display: flex;
-    justify-content: space-between; /* Add space between the fields */
+    flex-wrap: wrap; /* Allows wrapping if necessary */
     gap: 15px; /* Optional spacing between fields */
+    margin-bottom: 10px; /* Space between each form row */
+    justify-content: space-between; /* Add space between the fields */
 }
 
 .form-row .form-group {
